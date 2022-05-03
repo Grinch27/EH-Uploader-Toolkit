@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ehentai Uploader Smart Sort
 // @namespace    https://github.com/Grinch27
-// @version      0.1.1
+// @version      0.1.2
 // @description  Sort Img Cell Smarter!
 // @author       Grinch27
 // @match      *://exhentai.org/upld/*
@@ -202,28 +202,32 @@
     }
 
     function postEhentaiManageSort(post_text){
-        let ulgid_num = document.URL.match(/(?<=(gid\=))\d+/gi)[0];
-        let domain_org = document.URL.replace(/.*\/\//gi, '').replace(/managegallery.*/gi, '');
-        //let [post_text, post_params] = sortPageselCell();
-        try {
-            fetch(`https://${domain_org}managegallery?ulgid=${ulgid_num}`, {
-                method: 'POST',
-                headers: {
-                    'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    //'queryString': JSON.stringify({'ulgid': ulgid_num}),
-                    //'Cookie': document.cookie,
-                    'Cache-Control': 'max-age=0',
-                    'Sec-Fetch-Dest': 'document',
-                    'Sec-Fetch-Mode': 'navigate',
-                    'Sec-Fetch-User': '?1',
-                    'Upgrade-Insecure-Requests': 1,
-                },
-                body: JSON.parse(JSON.stringify(post_text))
-            })
-            alert("POST OK\nPlease Reflash");
-        } catch {
-            alert("POST fail!");
+        if (document.URL.search(/(?<=(ulgid\=))\d+/gi) == -1) {
+            alert("Not ulgid Page!\nAbort Post!");
+        } else {
+            let ulgid_num = document.URL.match(/(?<=(ulgid\=))\d+/gi)[0];
+            let domain_org = document.URL.replace(/.*\/\//gi, '').replace(/managegallery.*/gi, '');
+            //let [post_text, post_params] = sortPageselCell();
+            try {
+                fetch(`https://${domain_org}managegallery?ulgid=${ulgid_num}`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        //'queryString': JSON.stringify({'ulgid': ulgid_num}),
+                        //'Cookie': document.cookie,
+                        'Cache-Control': 'max-age=0',
+                        'Sec-Fetch-Dest': 'document',
+                        'Sec-Fetch-Mode': 'navigate',
+                        'Sec-Fetch-User': '?1',
+                        'Upgrade-Insecure-Requests': 1,
+                    },
+                    body: JSON.parse(JSON.stringify(post_text))
+                })
+                alert("POST OK\nPlease Reflash");
+            } catch {
+                alert("POST fail!");
+            }
         }
     }
 
