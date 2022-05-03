@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ehentai Uploader Smart Sort
 // @namespace    https://github.com/Grinch27
-// @version      0.1.0
+// @version      0.1.1
 // @description  Sort Img Cell Smarter!
 // @author       Grinch27
 // @match      *://exhentai.org/upld/*
@@ -201,10 +201,10 @@
         return [post_text, post_params]
     }
 
-    function postEhentaiManageSort(){
+    function postEhentaiManageSort(post_text){
         let ulgid_num = document.URL.match(/(?<=(gid\=))\d+/gi)[0];
         let domain_org = document.URL.replace(/.*\/\//gi, '').replace(/managegallery.*/gi, '');
-        let [post_text, post_params] = sortPageselCell();
+        //let [post_text, post_params] = sortPageselCell();
         try {
             fetch(`https://${domain_org}managegallery?ulgid=${ulgid_num}`, {
                 method: 'POST',
@@ -229,14 +229,32 @@
 
     function userBoard(){
         let user_flexbox = document.createElement('flexbox');
-        user_flexbox.setAttribute('class', "Tampermonkey-flexbox");
-        user_flexbox.style = 'display: flex; flex-direction: column; justify-content: center; align-items: center;'
+        user_flexbox.setAttribute('class', "Tampermonkey-SmartSort");
+        user_flexbox.style = 'display: flex; flex-direction: row; justify-content: center; align-items: center;'
         document.querySelector('a[name="reorder"]').appendChild(user_flexbox)
 
-        let button_sort = new onclickJump_Button("Smart Sort");
-        button_sort.Button.onclick = function(){ postEhentaiManageSort() };
-        button_sort.Button.style = "min-height: 26px; line-height: 20px; padding: 1px 5px 2px; border: 2px solid #8d8d8d; border-radius: 3px; opacity: 1.0;";
-        button_sort.append(document.querySelector('flexbox[class^="Tampermonkey"]'));
+        let style_EHbutton = "min-height: 26px; line-height: 20px; padding: 1px 5px 2px; border: 2px solid #8d8d8d; border-radius: 3px; opacity: 1.0;"
+
+        let button_sort = new onclickJump_Button("Scan Smart");
+        button_sort.Button.style = style_EHbutton;
+        button_sort.Button.setAttribute("id","scan-smart");
+        button_sort.Button.onclick = function(){
+            document.querySelector('button[id="scan-smart"]').value = sortPageselCell()[0];
+        };
+        button_sort.append(document.querySelector('flexbox[class="Tampermonkey-SmartSort"]'));
+
+        let button_post = new onclickJump_Button("Post Smart");
+        button_post.Button.style = style_EHbutton;
+        button_post.Button.setAttribute("id","post-smart");
+        button_post.Button.onclick = function(){
+            let post_text = document.querySelector('button[id="scan-smart"]').value;
+            if (post_text.search(/autosort/gi) != -1){
+                postEhentaiManageSort(post_text);
+            } else {
+                alert("Scan Error!\nAbort Post!\nPlease check Scan Smart Button Value");
+            }
+        }
+        button_post.append(document.querySelector('flexbox[class="Tampermonkey-SmartSort"]'));
     }
     // run
     userBoard();
