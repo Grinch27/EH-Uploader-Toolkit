@@ -13,6 +13,8 @@
 // @copyright       2022, Grinch27 (https://github.com/Grinch27)
 // @license         GPL-3.0-or-later; https://www.gnu.org/licenses/gpl-3.0-standalone.html
 // @homepageURL https://github.com/Grinch27/EH-Uploader-Toolkit/blob/main/Ehentai%20Uploader%20Smart%20Sort.js
+// @updateURL https://openuserjs.org/meta/Grinch27/Ehentai_Uploader_Smart_Sort.meta.js
+// @downloadURL https://openuserjs.org/install/Grinch27/Ehentai_Uploader_Smart_Sort.user.js
 // @run-at document-end
 // ==/UserScript==
 
