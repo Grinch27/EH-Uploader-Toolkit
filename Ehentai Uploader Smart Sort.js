@@ -2,19 +2,19 @@
 // @name         Ehentai Uploader Smart Sort
 // @namespace    https://github.com/Grinch27
 // @version      0.1.6
-// @description  help Ehentai Uploader Sort uploade-Img Smarter!
-// @icon            https://e-hentai.org/favicon.ico
 // @author       Grinch27
+// @description  help Ehentai Uploader Sort uploade-Img Smarter!
+// @homepageURL https://github.com/Grinch27/EH-Uploader-Toolkit
+// @icon            https://e-hentai.org/favicon.ico
 // @match      *://exhentai.org/upld/*
 // @match      *://upld.e-hentai.org/*
 // @exclude      https://exhentai.org/upld/manage
 // @exclude      https://upld.e-hentai.org/manage
 // @grant        none
-// @copyright       2022, Grinch27 (https://github.com/Grinch27)
-// @license         GPL-3.0-or-later; https://www.gnu.org/licenses/gpl-3.0-standalone.html
-// @homepageURL https://github.com/Grinch27/EH-Uploader-Toolkit/blob/main/Ehentai%20Uploader%20Smart%20Sort.js
 // @updateURL https://openuserjs.org/meta/Grinch27/Ehentai_Uploader_Smart_Sort.meta.js
 // @downloadURL https://openuserjs.org/install/Grinch27/Ehentai_Uploader_Smart_Sort.user.js
+// @copyright       2022, Grinch27 (https://github.com/Grinch27)
+// @license         GPL-3.0-or-later; https://www.gnu.org/licenses/gpl-3.0-standalone.html
 // @run-at document-end
 // ==/UserScript==
 
