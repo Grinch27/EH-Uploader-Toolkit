@@ -9,7 +9,6 @@
 // @match      *://upld.e-hentai.org/*
 // @exclude      https://exhentai.org/upld/manage
 // @exclude      https://upld.e-hentai.org/manage
-// @icon         none
 // @grant        none
 // @copyright       2022, Grinch27 (https://github.com/Grinch27)
 // @license         GPL-3.0-or-later; https://www.gnu.org/licenses/gpl-3.0-standalone.html
