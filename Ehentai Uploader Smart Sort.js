@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ehentai Uploader Smart Sort
 // @namespace    https://github.com/Grinch27
-// @version      0.1.3
+// @version      0.1.4
 // @description  Sort Img Cell Smarter!
 // @author       Grinch27
 // @match      *://exhentai.org/upld/*
@@ -28,29 +28,29 @@
     'use strict';
     // class define
     class onclickJump_Button {
-        constructor(innerHTML) {
+        constructor (innerHTML) {
             this.innerHTML = innerHTML;
             this.Button = document.createElement('button');
             this.Button.innerHTML = innerHTML;
             this.Button.setAttribute("class", 'Tampermonkey');
         }
-        onclickJump(URL) {
+        onclickJump (URL) {
             this.Button.setAttribute("href", URL);
-            this.Button.setAttribute("onclick", "javascript:window.open('" + URL +"')");
+            this.Button.setAttribute("onclick", `javascript:window.open('${URL}')`);
             this.Button.setAttribute("class", 'Tampermonkey-Jump');
         }
-        clickToCopy(str_copy) {
-            this.Button.setAttribute("id","copy_btn");
+        clickToCopy (str_copy) {
+            this.Button.setAttribute('id', 'copy_btn');
             this.Button.setAttribute("data-clipboard-text", str_copy);
             this.Button.setAttribute("class", 'Tampermonkey-Copy');
         }
-        append(Node){
+        append (Node) {
             Node.appendChild(this.Button);
         }
     }
 
     class EhentaiManageCell {
-        constructor(cell_node){
+        constructor (cell_node) {
             this.cell_id_ = null;
             this.cell_href_ = null;
             this.span_id_ = null;
@@ -62,28 +62,28 @@
             this.index_ = null;
             this.SetCellNode(cell_node);
         }
-        SetCellNode(cell_node){
+
+        SetCellNode (cell_node) {
+            this.cell_id_ = cell_node.getAttribute('id');
             this.SetSpanNode(cell_node.querySelector('input'));
             this.SetImgNode(cell_node.querySelector('img'));
-            this.cell_id_ = cell_node.getAttribute('id');
-            if (cell_node.querySelector('a[href]') != null) {
-                this.cell_href_ = cell_node.querySelector('a[href]').getAttribute('href');
-            } else {
-                this.cell_href_ = null;
-            }
+            this.SetHrefNode(cell_node.querySelector('a[href]'));
         }
-        SetSpanNode(span_node){
+
+        SetSpanNode (span_node) {
             this.span_id_ = span_node.getAttribute('id');
             this.span_value_ = Number(span_node.getAttribute('value'));
         }
-        SetImgNode(img_node){
+
+        SetImgNode (img_node) {
             this.img_id_ = img_node.getAttribute('id');
             this.img_alt_ = img_node.getAttribute('alt');
             this.img_src_ = img_node.getAttribute('src');
             this.MatchSeriesIndex(this.img_alt_.match(/\d+/g));
         }
-        MatchSeriesIndex(match_array){
-            if (match_array != null){
+
+        MatchSeriesIndex (match_array) {
+            if (match_array != null) {
                 switch (match_array.length) {
                     case 1:
                         this.series_ = Number(match_array[0]);
@@ -96,21 +96,22 @@
                 }
             }
         }
+
+        SetHrefNode (href_node) {
+            if (href_node != null) {
+                this.cell_href_ = href_node.getAttribute('href');
+                let temp_href = this.cell_href_.split('/').slice(-2)[0];
+                this.cell_href_ = this.cell_href_.replace(temp_href, temp_href.match(/.{10}/gi)[0]);
+                temp_href = undefined;
+            } else {
+                this.cell_href_ = null;
+            }
+        }
     }
 
-    class JsonPostCell {
-        constructor(name, value){
-            this.name = name;
-            this.value = value;
-        }
-        PrintData(){
-            return this.name + '=' + this.value;
-        }
-    }
-
-    function dynamicSort(property) {
-        var sortOrder = 1;
-        if(property[0] === "-") {
+    function dynamicSort (property) {
+        let sortOrder = 1;
+        if (property[0] === '-') {
             sortOrder = -1;
             property = property.substr(1);
         }
@@ -118,20 +119,20 @@
             /* next line works with strings and numbers,
              * and you may want to customize it to your needs
              */
-            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-            return result * sortOrder;
+            let result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder
         }
     }
 
-    function dynamicSortMultiple() {
+    function dynamicSortMultiple () {
         /* refer: sort-array-of-objects-by-string-property-value
          * save the arguments object as it will be overwritten
          * note that arguments object is an array-like object
          * consisting of the names of the properties to sort by
          */
-        var props = arguments;
+        let props = arguments;
         return function (obj1, obj2) {
-            var i = 0, result = 0, numberOfProperties = props.length;
+            let i = 0, result = 0; const numberOfProperties = props.length;
             /* try getting a different result from 0 (equal)
              * as long as we have extra properties to compare
              */
@@ -139,25 +140,30 @@
                 result = dynamicSort(props[i])(obj1, obj2);
                 i++;
             }
-            return result;
+            return result
         }
     }
 
-    function mergeArrayToLeft(left_array, right_array, property){
+    function removeDuplicatesFromArrayOfObjects (target_array, property) {
+        // refer: how-to-remove-all-duplicates-from-an-array-of-objects
+        return target_array.filter((v, i, a) => a.findIndex(v2 => (v2[property] === v[property])) === i) // or .findLastIndex
+    }
+
+    function mergeArrayToLeft (left_array, right_array, property) {
         // refer: combine-json-arrays-by-key-javascript
         return left_array.map(x => Object.assign(x, right_array.find(y => y[property] == x[property]))); //merge to left
     }
 
-    function countSeriesDuplicates(data_array){
+    function countSeriesDuplicates (data_array) {
         let property = 'series_';
         // refer: javascript-counting-duplicates-in-object-array-and-storing-the-count-as-a-new
         // refer: get-duplicates-in-array-of-strings-and-count-number-of-duplicates
         let res_count = Object.values(
             data_array.reduce(
-                function(elem, {series_}){
-                    elem[series_] = elem[series_] || {series_, count: 0};
+                function (elem, { series_ }) {
+                    elem[series_] = elem[series_] || { series_, count: 0 };
                     elem[series_].count++;
-                    return elem;
+                    return elem
                 }, Object.create(null)
             )
         );
@@ -166,7 +172,7 @@
         return data_array
     }
 
-    function scanCellInfo(cell_selector){
+    function scanCellInfo (cell_selector) {
         // collect img_cell to json_array
         let cell_node_array = document.querySelectorAll(cell_selector);
         let cell_json_array = [];
@@ -176,38 +182,30 @@
         }
         cell_json_array = countSeriesDuplicates(cell_json_array)
         alert(`${cell_json_array.length} ImgCell Scanned`);
+        // Data log for Scan debug
+        console.log(cell_json_array);
         return cell_json_array
     }
 
-    function removeDuplicatesFromArrayOfObjects(target_array, property){
-        // refer: how-to-remove-all-duplicates-from-an-array-of-objects
-        return target_array.filter((v,i,a)=>a.findIndex(v2=>(v2[property] === v[property]))===i); //or .findLastIndex
-    }
-
-    function sortPageselCell(){
+    function sortPageselCell () {
         let cell_json_array = scanCellInfo('div[id^="cell"]');
         // sort the json array
         cell_json_array.sort(dynamicSortMultiple("-series_", "index_"));
-        // convert json_array to POST ready
+        // convert json_array to text ready for POST
         let post_text = 'do_reorder=manual';
-        let post_params = [];
         for (let i = 0, each_param; each_param = cell_json_array[i]; i++) {
-            each_param = new JsonPostCell(each_param.span_id_, i+1);
-            post_params.push(JSON.parse(JSON.stringify(each_param)))
-            post_text += ('&' + each_param.PrintData())
+            post_text += `&${each_param.span_id_}=${i+1}`;
         }
-        post_params = JSON.parse(JSON.stringify(post_params))
         post_text += '&autosort=';
-        return [post_text, post_params]
+        return post_text
     }
 
-    function postEhentaiManageSort(post_text){
+    function postEhentaiManageSort (post_text) {
         if (document.URL.search(/(?<=(ulgid\=))\d+/gi) == -1) {
             alert("Not ulgid Page!\nAbort Post!");
         } else {
             let ulgid_num = document.URL.match(/(?<=(ulgid\=))\d+/gi)[0];
             let domain_org = document.URL.replace(/.*\/\//gi, '').replace(/managegallery.*/gi, '');
-            //let [post_text, post_params] = sortPageselCell();
             try {
                 fetch(`https://${domain_org}managegallery?ulgid=${ulgid_num}`, {
                     method: 'POST',
@@ -231,8 +229,8 @@
         }
     }
 
-    function userBoard(name_sortBoard){
-        // let name_sortBoard = 'SmartSort';
+    function userBoard (name_sortBoard) {
+        //let name_sortBoard = 'SmartSort';
 
         let user_flexbox = document.createElement('flexbox');
         user_flexbox.setAttribute('class', `Tampermonkey-${name_sortBoard}`);
@@ -247,7 +245,7 @@
         button_sort.Button.style = style_EHbutton;
         button_sort.Button.setAttribute("id", `${id_ScanSmart}`);
         button_sort.Button.onclick = function(){
-            document.querySelector(`button[id="${id_ScanSmart}"]`).value = sortPageselCell()[0];
+            document.querySelector(`button[id="${id_ScanSmart}"]`).value = sortPageselCell();
         };
         button_sort.append(document.querySelector(`flexbox[class="Tampermonkey-${name_sortBoard}"]`));
 
