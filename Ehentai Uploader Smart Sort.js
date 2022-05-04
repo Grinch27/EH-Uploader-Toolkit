@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ehentai Uploader Smart Sort
 // @namespace    https://github.com/Grinch27
-// @version      0.1.4
+// @version      0.1.5
 // @description  Sort Img Cell Smarter!
 // @author       Grinch27
 // @match      *://exhentai.org/upld/*
@@ -183,7 +183,9 @@
         cell_json_array = countSeriesDuplicates(cell_json_array)
         alert(`${cell_json_array.length} ImgCell Scanned`);
         // Data log for Scan debug
-        console.log(cell_json_array);
+        let property = 'series_'
+        let series_cell_array = removeDuplicatesFromArrayOfObjects (cell_json_array, property)
+        console.log(series_cell_array);
         return cell_json_array
     }
 
@@ -191,7 +193,7 @@
         let cell_json_array = scanCellInfo('div[id^="cell"]');
         // sort the json array
         cell_json_array.sort(dynamicSortMultiple("-series_", "index_"));
-        // convert json_array to text ready for POST
+        // convert json_array to text ready for POST 
         let post_text = 'do_reorder=manual';
         for (let i = 0, each_param; each_param = cell_json_array[i]; i++) {
             post_text += `&${each_param.span_id_}=${i+1}`;
