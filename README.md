@@ -21,3 +21,12 @@ Anyway, it works well in img sort, especially for those files like Pixix/Fanbox/
 I hope this tool can help EH uploaders, for it does save a lot of time from sorting plenty of imgs.
 
 Welcome for any Issues!
+
+## 进度 TODO List
+
+### Done
+- [x] Make a TODO List
+
+### TODO
+- [ ] Beta: setFilenameBoard
+- [ ] ...
