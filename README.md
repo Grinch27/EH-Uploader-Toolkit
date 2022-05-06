@@ -22,7 +22,7 @@ I hope this tool can help EH uploaders, for it does save a lot of time from sort
 
 Welcome for any Issues!
 
-## 进度 TODO List
+## Progress
 
 ### Done
 - [x] Make a TODO List
