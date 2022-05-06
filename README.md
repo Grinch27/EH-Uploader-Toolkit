@@ -28,5 +28,8 @@ Welcome for any Issues!
 - [x] Make a TODO List
 
 ### TODO
-- [ ] Beta: setFilenameBoard
+- [ ] Markdown: make a better intro
+- [ ] Beta: get setFilenameBoard funtion online
+- [ ] Beta: better scan format for local filename
+- [ ] Beta: support for non-filename auto menu generate
 - [ ] ...
